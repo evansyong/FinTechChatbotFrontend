@@ -1,10 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import ReactDOM from 'react-dom/client'
+import Home from './Home.jsx'
+import { ChakraProvider } from '@chakra-ui/react'
 import './index.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-createRoot(document.getElementById('root')).render(
-    <StrictMode>
-        <App />
-    </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <ChakraProvider toastOptions={{ defaultOptions: { position: 'bottom-right' } }}>
+        <BrowserRouter>
+            <Routes>
+                <Route path='/' element={<Home />} />
+            </Routes>
+        </BrowserRouter>
+    </ChakraProvider>
 )
