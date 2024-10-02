@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast } from "@chakra-ui/react"
 import { useState } from "react"
+import { motion } from "framer-motion"
 import instance from "../src/networking"
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -9,6 +11,7 @@ function Home() {
     const [validEmailInput, setValidEmailInput] = useState(false);
     const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
     const toast = useToast();
+    const navigate = useNavigate();
 
     function showToast(title, description, status, duration, isClosable) {
         toast.closeAll();
@@ -43,7 +46,7 @@ function Home() {
             if (submitEmail.status === 200) {
                 setIsSubmittingEmail(false);
                 onClose();
-                // SUCCESS. Redirect to OTP Verification Page
+                navigate("/verifyOTP", { state: { email: email } }); // Pass email state for later use
             }
         } catch (error) {
             setIsSubmittingEmail(false);
@@ -99,9 +102,15 @@ function Home() {
             >
                 <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
 
-                <Text mt={8} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"}>
-                    Welcome to NYPChat
-                </Text>
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <Text mt={8} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"}>
+                        Welcome to NYPChat
+                    </Text>
+                </motion.div>
             </Box>
 
             <Box display="flex" justifyContent={"center"} mt={-20}>
@@ -140,7 +149,6 @@ function Home() {
                             <Button
                                 isLoading
                                 width={"100%"}
-                                onClick={handleEmailSubmit}
                                 isDisabled={!validEmailInput}
                                 borderRadius={"2xl"}
                             >
