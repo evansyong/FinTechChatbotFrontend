@@ -303,14 +303,14 @@ function Chat() {
 
                                 <Box display="flex" justifyContent={"center"} mt={5}>
                                     <Box
-                                        width="50%"
+                                        width="90%"
                                         fontSize={"md"}
                                         padding="5px"
                                         textAlign={"center"}
-                                        bg="white"
-                                        color="#B15521"
-                                        _hover={{ bg: "whitesmoke" }}
-                                        _active={{ bg: "whitesmoke" }}
+                                        bg="#D5000A"
+                                        color="white"
+                                        _hover={{ bg: "#FF000D" }}
+                                        _active={{ bg: "#FF000D" }}
                                         boxShadow={"0 2px 2px 2px rgba(0.1, 0.1, 0.1, 0.1)"}
                                         cursor={"pointer"}
                                         transition={"0.2s ease-in-out"}
@@ -318,7 +318,7 @@ function Chat() {
                                         size="lg"
                                         onClick={onOpen}
                                     >
-                                        Discard session
+                                        Delete my session
                                     </Box>
                                 </Box>
                             </Box>
@@ -399,7 +399,7 @@ function Chat() {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            Delete Customer
+                            Delete your active session
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
