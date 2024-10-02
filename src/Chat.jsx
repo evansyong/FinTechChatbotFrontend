@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React from "react";
-import { Box, Card, Text, Image, Skeleton, Input, Button, Menu, MenuButton, MenuList, MenuItem, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from "@chakra-ui/react";
+import { Box, Card, Text, Image, Skeleton, Input, Button, Menu, MenuButton, MenuList, MenuItem, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast, Tooltip } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -14,12 +15,29 @@ function Chat() {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
+    const toast = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [prompt, setPrompt] = useState("");
+    const [validPrompt, setValidPrompt] = useState(false);
+    const [chatHistory, setChatHistory] = useState([]);
 
     const [answerMode, setAnswerMode] = useState("pipeline"); // pipeline or direct
     const [searchType, setSearchType] = useState("similarity"); // similarity or mmr
     const [chunks, setChunks] = useState(1); // 1 to 10 (inclusive)
     const [fetchedChunks, setFetchedChunks] = useState(1); // 1 to 10 (inclusive) - MUST BE HIGHER THAN CHUNKS (k)
-    const [temperature, setTemperature] = useState(0.0); // 0.0, 0.3, 0.5, 0.8 OR 1.0 (1.0 is the most creative)
+    const [temperature, setTemperature] = useState(parseFloat(0.0)); // 0.0, 0.3, 0.5, 0.8 OR 1.0 (1.0 is the most creative)
+
+    function showToast(title, description, status, duration, isClosable) {
+        toast.closeAll();
+        toast({
+            title: title,
+            description: description,
+            status: status,
+            duration: duration,
+            isClosable: isClosable
+        });
+    }
 
     const retrieveSessionAndPersist = async () => {
         try {
@@ -50,12 +68,121 @@ function Chat() {
             }
         } catch (error) {
             console.log("Failed to delete session. Error: " + error);
+            showToast(
+                "Uh-oh!",
+                "An unknown error occurred",
+                "warning",
+                3500,
+                true
+            );
+        }
+    }
+
+    const handleSubmitPrompt = async () => {
+        try {
+            setPrompt("");
+            setIsSubmitting(true);
+            const userMessageObject = { client: "user", message: prompt, error: false };
+            setChatHistory((prev) => [...prev, userMessageObject]);
+
+            const submitPrompt = await instance.post("/newPrompt", {
+                prompt: prompt,
+                configuration: {
+                    answer_mode: answerMode,
+                    search_type: searchType,
+                    k: chunks,
+                    fetch_k: fetchedChunks,
+                    temperature: parseFloat(temperature)
+                }
+            });
+            if (typeof submitPrompt.data === "string" && submitPrompt.data.startsWith("ERROR")) {
+                setIsSubmitting(false);
+                console.log("Failed to process prompt. Error: " + submitPrompt.data);
+                showToast(
+                    "Uh-oh!",
+                    submitPrompt.data.substring("ERROR: ".length),
+                    "info",
+                    3500,
+                    true
+                );
+
+                setChatHistory((prev) => {
+                    const updatedHistory = [...prev];
+                    updatedHistory[updatedHistory.length - 1].error = true;
+                    return updatedHistory;
+                });
+            } else {
+                if (submitPrompt.data.message.startsWith("ERROR")) {
+                    setIsSubmitting(false);
+                    console.log("Failed to submit prompt. Error: " + submitPrompt.data);
+                    showToast(
+                        "Uh-oh!",
+                        submitPrompt.data.message.substring("ERROR: ".length),
+                        "info",
+                        3500,
+                        true
+                    );
+
+                    setChatHistory((prev) => {
+                        const updatedHistory = [...prev];
+                        updatedHistory[updatedHistory.length - 1].error = true;
+                        return updatedHistory;
+                    });
+                } else if (submitPrompt.data.message.startsWith("SUCCESS")) {
+                    setIsSubmitting(false);
+                    const systemMessageObject = { client: "assistant", message: submitPrompt.data.answer };
+                    setChatHistory((prev) => [...prev, systemMessageObject]);
+                }
+            }
+        } catch (error) {
+            setPrompt("");
+            setIsSubmitting(false);
+            console.log("Failed to submit prompt. Error: " + error);
+            showToast(
+                "Uh-oh!",
+                "An unknown error occurred",
+                "warning",
+                3500,
+                true
+            );
+
+            setChatHistory((prev) => {
+                const updatedHistory = [...prev];
+                updatedHistory[updatedHistory.length - 1].error = true;
+                return updatedHistory;
+            });
+        }
+    }
+
+    const handleKeyDown = async (event) => {
+        if (event.key === "Enter") {
+            handleSubmitPrompt();
+        }
+    }
+
+    const handlePromptChange = (event) => {
+        setPrompt(event.target.value);
+        // strip the value of whitespaces and check if it's empty
+        if (event.target.value.trim() !== "") {
+            setValidPrompt(true);
+        } else {
+            setValidPrompt(false);
         }
     }
 
     useEffect(() => {
         retrieveSessionAndPersist()
     }, [])
+
+    useEffect(() => {
+        if (session !== null) {
+            console.log(session);
+            session["history"].forEach((chat) => {
+                const chatObject = { client: chat.role, message: chat.content };
+                setChatHistory((prev) => [...prev, chatObject]);
+            });
+        }
+    }, [session])
 
     return (
         <>
@@ -165,7 +292,7 @@ function Chat() {
                                             </MenuButton>
                                             <MenuList>
                                                 {[0.0, 0.3, 0.5, 0.8, 1.0].map((temp) => (
-                                                    <MenuItem key={temp} onClick={() => setTemperature(temp)}>
+                                                    <MenuItem key={temp} onClick={() => setTemperature(parseFloat(temp))}>
                                                         {temp}
                                                     </MenuItem>
                                                 ))}
@@ -202,21 +329,62 @@ function Chat() {
                 <Box flex="2" bg="gray.100" display="flex" alignItems="center" justifyContent="center">
                     <Box width="95%" height="95%" borderRadius="md">
                         <Card width="100%" height="100%" borderRadius="2xl" display="flex" flexDirection="column">
-                            <Box flex="1" p={4}>
-                                {/* Chat messages from both user and AI */}
+                            <Box flex="1" p={4} overflowY="auto">
+                                {chatHistory.map((chat, index) => (
+                                    <>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5 }}
+                                        >
+                                            <Box
+                                                display="flex"
+                                                justifyContent={chat.client === "user" ? "flex-end" : "flex-start"}
+                                            >
+                                                <Box
+                                                    bg={chat.error ? "red.300" : chat.client === "user" ? "#3171FA" : "gray.300"} // Change color if error
+                                                    color={chat.error ? "white" : chat.client === "user" ? "white" : "black"}
+                                                    borderRadius="xl"
+                                                    p={3}
+                                                    mb={2}
+                                                    maxWidth="80%"
+                                                >
+                                                    {chat.error ? (
+                                                        <Tooltip label="This message failed" aria-label='Tooltip'>
+                                                            <Text>{chat.message}</Text>
+                                                        </Tooltip>
+                                                    ) : (
+                                                        <Text>{chat.message}</Text>
+                                                    )}
+                                                </Box>
+                                            </Box>
+                                        </motion.div>
+                                    </>
+                                ))}
                             </Box>
 
                             <Box display="flex" alignItems="center" p={2}>
-                                <Input placeholder="Type a message..." mr={2} borderRadius="xl" />
-                                <Button
-                                    color="white"
-                                    bg="#3171FA"
-                                    _hover={{ bg: "#275CCD" }}
-                                    _active={{ bg: "#275CCD" }}
-                                    borderRadius="xl"
-                                >
-                                    Send
-                                </Button>
+                                <Input placeholder="Type a message..." mr={2} borderRadius="xl" onChange={handlePromptChange} onKeyDown={handleKeyDown} value={prompt} />
+                                {isSubmitting === true ? (
+                                    <Button
+                                        isLoading
+                                        borderRadius="xl"
+                                    >
+                                        Send
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        isDisabled={!validPrompt}
+                                        color="white"
+                                        bg="#3171FA"
+                                        _hover={{ bg: "#275CCD" }}
+                                        _active={{ bg: "#275CCD" }}
+                                        borderRadius="xl"
+                                        onClick={handleSubmitPrompt}
+                                    >
+                                        Send
+                                    </Button>
+                                )}
                             </Box>
                         </Card>
                     </Box>

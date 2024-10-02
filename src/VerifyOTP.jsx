@@ -37,7 +37,6 @@ const VerifyOtpCard = () => {
                 email: email,
                 otpCode: otp
             });
-
             if (submitOTP.data.startsWith("SUCCESS")) {
                 setIsSubmittingOTP(false);
                 navigate("/chat"); 
@@ -50,11 +49,11 @@ const VerifyOtpCard = () => {
                     3500,
                     true
                 );
-            } else {
+            } else if (submitOTP.data.startsWith("ERROR")) {
                 setIsSubmittingOTP(false);
                 showToast(
                     "Uh-oh!",
-                    "Failed to verify OTP",
+                    submitOTP.data.substring("ERROR: ".length),
                     "warning",
                     3500,
                     true
@@ -120,7 +119,6 @@ const VerifyOtpCard = () => {
                             <Button
                                 isLoading
                                 width={"100%"}
-                                onClick={handleOTPSubmit}
                                 borderRadius={"2xl"}
                             >
                                 Verify

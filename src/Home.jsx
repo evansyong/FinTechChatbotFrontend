@@ -52,7 +52,6 @@ function Home() {
             const submitEmail = await instance.post("/requestOTP", {
                 email: email
             });
-
             if (submitEmail.data.startsWith("SUCCESS")) {
                 setIsSubmittingEmail(false);
                 onClose();
@@ -64,6 +63,16 @@ function Home() {
                     "Uh-oh!",
                     submitEmail.data.substring("UERROR: ".length),
                     "info",
+                    3500,
+                    true
+                );
+            } else if (submitEmail.data.startsWith("ERROR")) {
+                setIsSubmittingEmail(false);
+                onClose();
+                showToast(
+                    "Uh-oh!",
+                    submitEmail.data.substring("ERROR: ".length),
+                    "error",
                     3500,
                     true
                 );
@@ -162,7 +171,6 @@ function Home() {
                             <Button
                                 isLoading
                                 width={"100%"}
-                                isDisabled={!validEmailInput}
                                 borderRadius={"2xl"}
                             >
                                 Proceed
