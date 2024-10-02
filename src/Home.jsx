@@ -1,9 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast } from "@chakra-ui/react"
+
+import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, IconButton, useToast } from "@chakra-ui/react"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
+import { InfoIcon } from '@chakra-ui/icons';
 import { motion } from "framer-motion"
 import instance from "../src/networking"
-import { useNavigate } from "react-router-dom";
 
 function Home() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,14 +28,14 @@ function Home() {
 
     const handleEmailInputChange = (event) => {
         setEmail(event);
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@mymail.nyp.edu.sg$/
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E.g lorem@ipsum.com
 
         if (emailRegex.test(event)) {
             setValidEmailInput(true);
         } else {
             setValidEmailInput(false);
         }
-    }
+    };
 
     const handleEmailSubmit = async () => {
         setValidEmailInput(false);
@@ -43,44 +45,33 @@ function Home() {
                 email: email
             });
 
-            if (submitEmail.status === 200) {
+            if (submitEmail.data.startsWith("SUCCESS")) {
                 setIsSubmittingEmail(false);
                 onClose();
                 navigate("/verifyOTP", { state: { email: email } }); // Pass email state for later use
-            }
-        } catch (error) {
-            setIsSubmittingEmail(false);
-            if (error.response && error.response.data && typeof error.response.data == "string") {
-                console.log("Failed to submit email; response: " + error.response.data);
-                if (error.response.data.startsWith("UERROR")) {
-                    showToast(
-                        "Uh-oh!",
-                        error.response.data.substring("UERROR: ".length),
-                        "info",
-                        3500,
-                        true
-                    );
-                } else {
-                    onClose();
-                    showToast(
-                        "Something went wrong",
-                        "Failed to submit your email. Please try again",
-                        "error",
-                        3500,
-                        true
-                    );
-                }
-            } else {
+            } else if (submitEmail.data.startsWith("UERROR")) {
+                setIsSubmittingEmail(false);
                 onClose();
-                console.log("Unknown error occurred when attempting to submit email; error: " + error);
                 showToast(
-                    "Something went wrong",
-                    "Failed to submit your email. Please try again",
-                    "error",
+                    "Uh-oh!",
+                    submitEmail.data.substring("UERROR: ".length),
+                    "info",
                     3500,
                     true
                 );
             }
+        } catch (error) {
+            onClose();
+            setIsSubmittingEmail(false);
+            console.log("Failed to submit email. Error: " + error);
+            showToast(
+                "Uh-oh!",
+                "An unkwon error occured",
+                "error",
+                3500,
+                true
+            );
+
         }
     }
 
@@ -89,6 +80,8 @@ function Home() {
             handleEmailSubmit();
         }
     }
+
+    const { isOpen: isInfoOpen, onOpen: onInfoOpen, onClose: onInfoClose } = useDisclosure();
 
     return (
         <>
@@ -168,6 +161,55 @@ function Home() {
                                 Proceed
                             </Button>
                         )}
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            <IconButton
+                icon={<InfoIcon />}
+                aria-label="Info"
+                position="fixed"
+                bottom={4}
+                left={4}
+                borderRadius="full"
+                onClick={onInfoOpen}
+                size="lg"
+                bg="#3171FA"
+                color="white"
+                _hover={{ bg: "#2960D4" }}
+                _active={{ bg: "#3171FA" }}
+            />
+
+            <Modal size="xl" blockScrollOnMount={true} closeOnOverlayClick={true} onClose={onInfoClose} isOpen={isInfoOpen} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>About NYPChat</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text mb={4}>
+                            NYPChat is a fun and intuitive chatbot which you can ask anything NYP to. It was designed to demonstrate the power of Retrieval Augmented Generation. Members of the NYP AI Student Interest Group conducted Project LLM, a research project into learning the nuances of Large Language Models and coercing them to get desired output, in 2024. NYPChat is a result of this project.
+                        </Text>
+
+                        <Text mb={4}>
+                            You can easily flick a few switches and dials and NYPChat will on-the-spot create retrieval chains that meet your requirements and generate an answer to your prompt. Behind the scenes, entire programmatic chains and blocks, supported by prompt templates and vectorstores, are assembled in real-time to generate answers that keep in context with the conversation.
+                        </Text>
+
+                        <Text mb={4}>
+                            What are you waiting for? Try it out now!
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter display='flex' justifyContent={"center"}>
+                        <Button
+                            width="100%"
+                            bg="#3171FA"
+                            color="white"
+                            _hover={{ bg: "#2960D4" }}
+                            _active={{ bg: "#3171FA" }}
+                            onClick={onInfoClose}
+                            borderRadius={"2xl"}
+                        >
+                            Awesome!
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

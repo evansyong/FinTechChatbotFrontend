@@ -1,17 +1,86 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import { Box, Button, Heading, Input, Text, VStack, Image } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, Text, VStack, Image, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import instance from './networking';
 
 const VerifyOtpCard = () => {
+    const [otp, setOtp] = useState("");
     const [isSubmittingOTP, setIsSubmittingOTP] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const toast = useToast();
 
-    const handleOTPSubmit = () => {
-        setIsSubmittingOTP(true);
-        // Make networking call to verify OTP endpoint
-        // try-catch and error handling
+    const { email } = location.state;
+
+    function showToast(title, description, status, duration, isClosable) {
+        toast.closeAll();
+        toast({
+            title: title,
+            description: description,
+            status: status,
+            duration: duration,
+            isClosable: isClosable
+        });
     }
+
+    const handleOTPInputChange = (event) => {
+        setOtp(event);
+    }
+
+    const handleOTPSubmit = async () => {
+        setIsSubmittingOTP(true);
+        try {
+            console.log("Email: " + email + ", OTP: " + otp); // remove
+
+            const submitOTP = await instance.post("/verifyOTP", {
+                email: email,
+                otpCode: otp
+            });
+
+            if (submitOTP.data.startsWith("SUCCESS")) {
+                setIsSubmittingOTP(false);
+                navigate("/chat");
+            } else if (submitOTP.data.startsWith("UERROR")) {
+                setIsSubmittingOTP(false);
+                showToast(
+                    "Uh-oh!",
+                    submitOTP.data.substring("UERROR: ".length),
+                    "warning",
+                    3500,
+                    true
+                );
+            } else {
+                setIsSubmittingOTP(false);
+                showToast(
+                    "Uh-oh!",
+                    "Failed to verify OTP",
+                    "warning",
+                    3500,
+                    true
+                );
+            }
+        } catch (error) {
+            setIsSubmittingOTP(false);
+            console.log("Failed to verify OTP. Error: " + error);
+            showToast(
+                "Uh-oh!",
+                "An unknown error occurred",
+                "warning",
+                3500,
+                true
+            );
+        }
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleOTPSubmit();
+        }
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -36,7 +105,7 @@ const VerifyOtpCard = () => {
                             alt="OTP Verification"
                             mx="auto"
                             width="280px"
-                            height="100px"
+                            height="120px"
                         />
 
                         <Heading as="h2" fontSize={"23px"} textAlign="center" fontFamily={"Comfortaa"} fontWeight={"bold"}>
@@ -47,7 +116,7 @@ const VerifyOtpCard = () => {
                             Please enter the OTP sent to your email
                         </Text>
 
-                        <Input placeholder="Enter OTP" />
+                        <Input placeholder="Enter OTP" onChange={event => handleOTPInputChange(event.target.value)} onKeyDown={handleKeyDown} />
 
                         {isSubmittingOTP === true ? (
                             <Button
