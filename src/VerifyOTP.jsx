@@ -33,8 +33,6 @@ const VerifyOtpCard = () => {
     const handleOTPSubmit = async () => {
         setIsSubmittingOTP(true);
         try {
-            console.log("Email: " + email + ", OTP: " + otp); // remove
-
             const submitOTP = await instance.post("/verifyOTP", {
                 email: email,
                 otpCode: otp
@@ -42,7 +40,7 @@ const VerifyOtpCard = () => {
 
             if (submitOTP.data.startsWith("SUCCESS")) {
                 setIsSubmittingOTP(false);
-                navigate("/chat");
+                navigate("/chat"); 
             } else if (submitOTP.data.startsWith("UERROR")) {
                 setIsSubmittingOTP(false);
                 showToast(

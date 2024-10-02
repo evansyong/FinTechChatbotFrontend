@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, IconButton, useToast } from "@chakra-ui/react"
+import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast } from "@chakra-ui/react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { InfoIcon } from '@chakra-ui/icons';
 import { motion } from "framer-motion"
 import instance from "../src/networking"
 
@@ -24,6 +23,15 @@ function Home() {
             duration: duration,
             isClosable: isClosable
         });
+    }
+
+    const handleGetStarted = () => {
+        if (localStorage.getItem("activeSession")) {
+            navigate("/chat");
+            return;
+        } else {
+            onOpen();
+        }
     }
 
     const handleEmailInputChange = (event) => {
@@ -48,7 +56,7 @@ function Home() {
             if (submitEmail.data.startsWith("SUCCESS")) {
                 setIsSubmittingEmail(false);
                 onClose();
-                navigate("/verifyOTP", { state: { email: email } }); // Pass email state for later use
+                navigate("/verifyOTP", { state: { email: email } });
             } else if (submitEmail.data.startsWith("UERROR")) {
                 setIsSubmittingEmail(false);
                 onClose();
@@ -81,17 +89,15 @@ function Home() {
         }
     }
 
-    const { isOpen: isInfoOpen, onOpen: onInfoOpen, onClose: onInfoClose } = useDisclosure();
-
     return (
         <>
             <Box
                 display="flex"
                 justifyContent="center"
                 flexDirection="column"
-                minHeight="100vh"
+                minHeight="90vh"
                 alignItems="center"
-                mt={-20}
+                mt={10}
             >
                 <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
 
@@ -100,24 +106,38 @@ function Home() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Text mt={8} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"}>
-                        Welcome to NYPChat
-                    </Text>
-                </motion.div>
-            </Box>
+                    <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
+                        <Text mt={10} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"} mb={6} textAlign={"center"} fontWeight={"bold"}>
+                            Welcome to NYPChat
+                        </Text>
 
-            <Box display="flex" justifyContent={"center"} mt={-20}>
-                <Button
-                    bg="#3171FA"
-                    color="white"
-                    _hover={{ bg: "#275CCD" }}
-                    _active={{ bg: "#275CCD" }}
-                    borderRadius={"xl"}
-                    size="lg"
-                    onClick={onOpen}
-                >
-                    Get Started
-                </Button>
+                        <Text mb={4} color="gray.500" textAlign={"left"}>
+                            NYPChat is a fun and intuitive chatbot which you can ask anything NYP to. It was designed to demonstrate the power of Retrieval Augmented Generation. Members of the NYP AI Student Interest Group conducted Project LLM, a research project into learning the nuances of Large Language Models and coercing them to get desired output, in 2024. NYPChat is a result of this project.
+                        </Text>
+
+                        <Text mb={4} color="gray.500" textAlign={"left"}>
+                            You can easily flick a few switches and dials and NYPChat will on-the-spot create retrieval chains that meet your requirements and generate an answer to your prompt. Behind the scenes, entire programmatic chains and blocks, supported by prompt templates and vectorstores, are assembled in real-time to generate answers that keep in context with the conversation.
+                        </Text>
+
+                        <Text mb={4} color="gray.500" textAlign={"left"}>
+                            What are you waiting for? Try it out now! 
+                        </Text>
+                    </Box>
+                </motion.div>
+
+                <Box display="flex" justifyContent={"center"} mt={5} mb={10}>
+                    <Button
+                        bg="#3171FA"
+                        color="white"
+                        _hover={{ bg: "#275CCD" }}
+                        _active={{ bg: "#275CCD" }}
+                        borderRadius={"xl"}
+                        size="lg"
+                        onClick={handleGetStarted}
+                    >
+                        Get Started
+                    </Button>
+                </Box>
             </Box>
 
             <Modal blockScrollOnMount={true} closeOnOverlayClick={true} onClose={onClose} isOpen={isOpen} isCentered>
@@ -161,55 +181,6 @@ function Home() {
                                 Proceed
                             </Button>
                         )}
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-
-            <IconButton
-                icon={<InfoIcon />}
-                aria-label="Info"
-                position="fixed"
-                bottom={4}
-                left={4}
-                borderRadius="full"
-                onClick={onInfoOpen}
-                size="lg"
-                bg="#3171FA"
-                color="white"
-                _hover={{ bg: "#2960D4" }}
-                _active={{ bg: "#3171FA" }}
-            />
-
-            <Modal size="xl" blockScrollOnMount={true} closeOnOverlayClick={true} onClose={onInfoClose} isOpen={isInfoOpen} isCentered>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>About NYPChat</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Text mb={4}>
-                            NYPChat is a fun and intuitive chatbot which you can ask anything NYP to. It was designed to demonstrate the power of Retrieval Augmented Generation. Members of the NYP AI Student Interest Group conducted Project LLM, a research project into learning the nuances of Large Language Models and coercing them to get desired output, in 2024. NYPChat is a result of this project.
-                        </Text>
-
-                        <Text mb={4}>
-                            You can easily flick a few switches and dials and NYPChat will on-the-spot create retrieval chains that meet your requirements and generate an answer to your prompt. Behind the scenes, entire programmatic chains and blocks, supported by prompt templates and vectorstores, are assembled in real-time to generate answers that keep in context with the conversation.
-                        </Text>
-
-                        <Text mb={4}>
-                            What are you waiting for? Try it out now!
-                        </Text>
-                    </ModalBody>
-                    <ModalFooter display='flex' justifyContent={"center"}>
-                        <Button
-                            width="100%"
-                            bg="#3171FA"
-                            color="white"
-                            _hover={{ bg: "#2960D4" }}
-                            _active={{ bg: "#3171FA" }}
-                            onClick={onInfoClose}
-                            borderRadius={"2xl"}
-                        >
-                            Awesome!
-                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

@@ -7,6 +7,7 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
     config.headers["content-type"] = "application/json";
     config.headers["nypcapikey"] = import.meta.env.VITE_BACKEND_API_KEY
+    config.withCredentials = true;
 
     return config;
 }, (err) => {
