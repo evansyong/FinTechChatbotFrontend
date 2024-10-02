@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React from "react";
+import React, { useRef } from "react";
 import { Box, Card, Text, Image, Skeleton, Input, Button, Menu, MenuButton, MenuList, MenuItem, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast, Tooltip } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ function Chat() {
     const cancelRef = React.useRef()
     const toast = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const hasLoadedHistoryRef = useRef(false);
 
     const [prompt, setPrompt] = useState("");
     const [validPrompt, setValidPrompt] = useState(false);
@@ -175,14 +176,15 @@ function Chat() {
     }, [])
 
     useEffect(() => {
-        if (session !== null) {
+        if (session !== null && !hasLoadedHistoryRef.current) {
             console.log(session);
             session["history"].forEach((chat) => {
                 const chatObject = { client: chat.role, message: chat.content };
                 setChatHistory((prev) => [...prev, chatObject]);
             });
+            hasLoadedHistoryRef.current = true;
         }
-    }, [session])
+    }, [session]);
 
     return (
         <>
@@ -311,7 +313,6 @@ function Chat() {
                                         color="white"
                                         _hover={{ bg: "#FF000D" }}
                                         _active={{ bg: "#FF000D" }}
-                                        boxShadow={"0 2px 2px 2px rgba(0.1, 0.1, 0.1, 0.1)"}
                                         cursor={"pointer"}
                                         transition={"0.2s ease-in-out"}
                                         borderRadius={"xl"}
@@ -342,11 +343,11 @@ function Chat() {
                                                 justifyContent={chat.client === "user" ? "flex-end" : "flex-start"}
                                             >
                                                 <Box
-                                                    bg={chat.error ? "red.300" : chat.client === "user" ? "#3171FA" : "gray.300"} // Change color if error
+                                                    bg={chat.error ? "red.300" : chat.client === "user" ? "#3171FA" : "gray.300"}
                                                     color={chat.error ? "white" : chat.client === "user" ? "white" : "black"}
                                                     borderRadius="xl"
                                                     p={3}
-                                                    mb={2}
+                                                    mb={4}
                                                     maxWidth="80%"
                                                 >
                                                     {chat.error ? (
