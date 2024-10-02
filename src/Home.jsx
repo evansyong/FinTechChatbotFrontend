@@ -151,7 +151,7 @@ function Home() {
 
             <Modal blockScrollOnMount={true} closeOnOverlayClick={true} onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent margin={3}>
                     <ModalHeader>Let's get you started!</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>

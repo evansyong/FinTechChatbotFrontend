@@ -91,7 +91,7 @@ const VerifyOtpCard = () => {
                 minHeight="90vh"
             >
                 <Box
-                    w="md"
+                    w="sm"
                     p={8}
                     borderRadius="lg"
                     boxShadow={"0 2px 4px 2px rgba(0.1, 0.1, 0.1, 0.1)"}
