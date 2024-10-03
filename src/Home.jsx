@@ -47,6 +47,7 @@ function Home() {
     };
 
     const handleEmailSubmit = async () => {
+        localStorage.setItem("OTPRequested", "true");
         setValidEmailInput(false);
         try {
             setIsSubmittingEmail(true);

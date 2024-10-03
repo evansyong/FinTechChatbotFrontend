@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 
 import { Box, Button, Heading, Input, Text, VStack, Image, useToast } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import instance from './networking';
@@ -13,7 +14,7 @@ const VerifyOtpCard = () => {
     const navigate = useNavigate();
     const toast = useToast();
 
-    const { email } = location.state;
+    const { email } = location.state || "";
 
     function showToast(title, description, status, duration, isClosable) {
         toast.closeAll();
@@ -38,6 +39,7 @@ const VerifyOtpCard = () => {
                 otpCode: otp
             });
             if (submitOTP.data.startsWith("SUCCESS")) {
+                localStorage.removeItem("OTPRequested");
                 setIsSubmittingOTP(false);
                 navigate("/chat"); 
             } else if (submitOTP.data.startsWith("UERROR")) {
@@ -77,6 +79,13 @@ const VerifyOtpCard = () => {
             handleOTPSubmit();
         }
     }
+
+    useEffect(() => {
+        if (!localStorage.getItem("OTPRequested") || localStorage.getItem("OTPRequested") !== "true") {
+            console.log("Access denied. Redirecting to home page.");
+            navigate("/");
+        }
+    }, []);
 
     return (
         <motion.div
