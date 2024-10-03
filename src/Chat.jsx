@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -387,35 +386,34 @@ function Chat() {
                                 }}
                             >
                                 {chatHistory.map((chat, index) => (
-                                    <>
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.5 }}
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.5 }}
+                                    >
+                                        <Box
+                                            display="flex"
+                                            justifyContent={chat.client === "user" ? "flex-end" : "flex-start"}
                                         >
                                             <Box
-                                                display="flex"
-                                                justifyContent={chat.client === "user" ? "flex-end" : "flex-start"}
+                                                bg={chat.error ? "red.300" : chat.client === "user" ? "#3171FA" : "gray.300"}
+                                                color={chat.error ? "white" : chat.client === "user" ? "white" : "black"}
+                                                borderRadius="xl"
+                                                p={3}
+                                                mb={4}
+                                                maxWidth="80%"
                                             >
-                                                <Box
-                                                    bg={chat.error ? "red.300" : chat.client === "user" ? "#3171FA" : "gray.300"}
-                                                    color={chat.error ? "white" : chat.client === "user" ? "white" : "black"}
-                                                    borderRadius="xl"
-                                                    p={3}
-                                                    mb={4}
-                                                    maxWidth="80%"
-                                                >
-                                                    {chat.error ? (
-                                                        <Tooltip label="This message failed" aria-label='Tooltip'>
-                                                            <Text>{chat.message}</Text>
-                                                        </Tooltip>
-                                                    ) : (
+                                                {chat.error ? (
+                                                    <Tooltip label="This message failed" aria-label='Tooltip'>
                                                         <Text>{chat.message}</Text>
-                                                    )}
-                                                </Box>
+                                                    </Tooltip>
+                                                ) : (
+                                                    <Text>{chat.message}</Text>
+                                                )}
                                             </Box>
-                                        </motion.div>
-                                    </>
+                                        </Box>
+                                    </motion.div>
                                 ))}
                             </Box>
 
