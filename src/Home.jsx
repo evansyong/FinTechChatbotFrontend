@@ -83,7 +83,7 @@ function Home() {
             console.log("Failed to submit email. Error: " + error);
             showToast(
                 "Uh-oh!",
-                "An unkwon error occured",
+                "An unknown error occured",
                 "error",
                 3500,
                 true

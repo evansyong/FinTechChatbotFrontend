@@ -192,7 +192,25 @@ function Chat() {
         <>
             <Box display="flex" width="100vw" height="100vh" overflow="hidden">
                 {!isNarrowerThan680 && (
-                    <Box flex="1" bg="gray.100">
+                    <Box
+                        flex="1"
+                        bg="gray.100"
+                        overflowY="scroll"
+                        scrollBehavior={"smooth"}
+                        sx={{
+                            "&::-webkit-scrollbar": {
+                                width: "10px"
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "gray.300",
+                                borderRadius: "20px"
+                                
+                            },
+                            "&::-webkit-scrollbar-thumb:hover": {
+                                backgroundColor: "gray.400"
+                            }
+                        }}
+                    >
                         <Box display="flex" justifyContent={"center"} mt={5} mb={4}>
                             <Image src="src/assets/NYP_AI_Text.png" width="60%" />
                         </Box>
@@ -331,15 +349,44 @@ function Chat() {
                     </Box>
                 )}
 
-                <Box flex="2" bg="gray.100" display="flex" flexDir={isNarrowerThan680 ? "column" : "row"}>
+                <Box
+                    flex="2"
+                    bg="gray.100"
+                    display="flex"
+                    flexDir={isNarrowerThan680 ? "column" : "row"}
+                >
                     {isNarrowerThan680 && (
                         <Box display="flex" justifyContent={"center"} mt={5} mb={4}>
                             <Image src="src/assets/NYP_AI_Text.png" width="20%" />
                         </Box>
                     )}
-                    <Box width="95%" height={isNarrowerThan680 ? "90%" : "95%"} borderRadius="md" mt={isNarrowerThan680 ? 3 : 4} marginLeft="auto" marginRight="auto">
-                        <Card width="100%" height="100%" borderRadius="2xl" display="flex" flexDirection="column">
-                            <Box flex="1" p={4} overflowY="auto">
+                    <Box
+                        width="95%"
+                        height={isNarrowerThan680 ? "90%" : "95%"}
+                        borderRadius="md"
+                        mt={isNarrowerThan680 ? 3 : 4}
+                        marginLeft="auto"
+                        marginRight="auto"
+                    >
+                        <Card width="100%" height="100%" borderRadius="xl" display="flex" flexDirection="column">
+                            <Box
+                                flex="1"
+                                p={4}
+                                overflowY="scroll"
+                                sx={{
+                                    "&::-webkit-scrollbar": {
+                                        width: "10px",
+                                    },
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "gray.300",
+                                        borderRadius: "3xl"
+                                        
+                                    },
+                                    "&::-webkit-scrollbar-thumb:hover": {
+                                        backgroundColor: "gray.400"
+                                    }
+                                }}
+                            >
                                 {chatHistory.map((chat, index) => (
                                     <>
                                         <motion.div
