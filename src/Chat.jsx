@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -8,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon, SettingsIcon, InfoIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import instance from "./networking";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function Chat() {
     const [session, setSession] = useState(null);
@@ -421,15 +424,32 @@ function Chat() {
                                                 color={chat.error ? "white" : chat.client === "user" ? "white" : "black"}
                                                 borderRadius="xl"
                                                 p={3}
+                                                paddingLeft={8}
+                                                paddingRight={8}
                                                 mb={4}
                                                 maxWidth="80%"
+                                                overflowX="hidden" // Prevent horizontal overflow
+                                                whiteSpace="pre-wrap" // Allow text to wrap, including spaces and new lines
+                                                wordBreak="break-word"
+                                                sx={{
+                                                    "& ol": {
+                                                        paddingLeft: "20px", // Indentation for ordered lists
+                                                        margin: 0,
+                                                        listStylePosition: "inside",
+                                                    },
+                                                    "& li": {
+                                                        marginBottom: "5px", // Space between list items
+                                                    }
+                                                }}
                                             >
                                                 {chat.error ? (
                                                     <Tooltip label="This message failed" aria-label='Tooltip'>
                                                         <Text>{chat.message}</Text>
                                                     </Tooltip>
                                                 ) : (
-                                                    <Text>{chat.message}</Text>
+                                                    <Markdown remarkPlugins={[remarkGfm]}>
+                                                        {chat.message}
+                                                    </Markdown>
                                                 )}
                                             </Box>
                                         </Box>
