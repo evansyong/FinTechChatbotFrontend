@@ -28,8 +28,8 @@ function Chat() {
 
     const [answerMode, setAnswerMode] = useState("pipeline"); // pipeline or direct
     const [searchType, setSearchType] = useState("similarity"); // similarity or mmr
-    const [chunks, setChunks] = useState(1); // 1 to 10 (inclusive)
-    const [fetchedChunks, setFetchedChunks] = useState(1); // 1 to 10 (inclusive) - MUST BE HIGHER THAN CHUNKS (k)
+    const [chunks, setChunks] = useState(3); // 1 to 10 (inclusive)
+    const [fetchedChunks, setFetchedChunks] = useState(5); // 1 to 10 (inclusive) - MUST BE HIGHER THAN CHUNKS (k)
     const [temperature, setTemperature] = useState(parseFloat(0.0)); // 0.0, 0.3, 0.5, 0.8 OR 1.0 (1.0 is the most creative)
 
     const [isNarrowerThan870] = useMediaQuery("(max-width: 870px)");
