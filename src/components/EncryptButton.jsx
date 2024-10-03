@@ -8,7 +8,7 @@ const TARGET_TEXT = "Get Started";
 const CYCLES_PER_LETTER = 2;
 const SHUFFLE_TIME = 50;
 
-const CHARS = "*************************";
+const CHARS = "exqfmpdzyrghboiacjwlkstunv";
 
 const EncryptButton = ({ onClick }) => {
     const intervalRef = useRef(null);
@@ -48,8 +48,8 @@ const EncryptButton = ({ onClick }) => {
     return (
         <motion.div whileHover={{ scale: 1.025 }} whileTap={{ scale: 0.975 }}>
             <Button
-                minWidth="180px"
-                width="180px"
+                minWidth="200px"
+                width="200px"
                 onMouseEnter={scramble}
                 onMouseLeave={stopScramble}
                 onClick={onClick}
