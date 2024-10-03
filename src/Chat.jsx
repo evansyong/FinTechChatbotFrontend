@@ -52,6 +52,11 @@ function Chat() {
             if (retrieveSession.data.message === "SUCCESS: Session is active.") {
                 localStorage.setItem("activeSession", true);
                 setSession(retrieveSession.data);
+                setAnswerMode(retrieveSession.data["config"]["answer_mode"]);
+                setSearchType(retrieveSession.data["config"]["search_type"]);
+                setChunks(retrieveSession.data["config"]["k"]);
+                setFetchedChunks(retrieveSession.data["config"]["fetch_k"]);
+                setTemperature(retrieveSession.data["config"]["temperature"]);
             } else {
                 localStorage.removeItem("activeSession");
                 console.log("No active session.");
