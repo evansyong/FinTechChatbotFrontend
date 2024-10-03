@@ -30,7 +30,7 @@ function Chat() {
     const [fetchedChunks, setFetchedChunks] = useState(1); // 1 to 10 (inclusive) - MUST BE HIGHER THAN CHUNKS (k)
     const [temperature, setTemperature] = useState(parseFloat(0.0)); // 0.0, 0.3, 0.5, 0.8 OR 1.0 (1.0 is the most creative)
 
-    const [isNarrowerThan680] = useMediaQuery("(max-width: 680px)");
+    const [isNarrowerThan870] = useMediaQuery("(max-width: 870px)");
 
     function showToast(title, description, status, duration, isClosable) {
         toast.closeAll();
@@ -57,7 +57,7 @@ function Chat() {
             }
         } catch (error) {
             localStorage.removeItem("activeSession");
-            console.log("Failed to retrieve active session. Error: " + error.message);
+            console.error("Failed to retrieve active session. Error: " + error.message);
             navigate("/");
         }
     };
@@ -71,7 +71,7 @@ function Chat() {
                 navigate("/");
             }
         } catch (error) {
-            console.log("Failed to delete session. Error: " + error);
+            console.error("Failed to delete session. Error: " + error);
             showToast(
                 "Uh-oh!",
                 "An unknown error occurred",
@@ -101,7 +101,7 @@ function Chat() {
             });
             if (typeof submitPrompt.data === "string" && submitPrompt.data.startsWith("ERROR")) {
                 setIsSubmitting(false);
-                console.log("Failed to process prompt. Error: " + submitPrompt.data);
+                console.error("Failed to process prompt. Error: " + submitPrompt.data);
                 showToast(
                     "Uh-oh!",
                     submitPrompt.data.substring("ERROR: ".length),
@@ -118,7 +118,7 @@ function Chat() {
             } else {
                 if (submitPrompt.data.message.startsWith("ERROR")) {
                     setIsSubmitting(false);
-                    console.log("Failed to submit prompt. Error: " + submitPrompt.data);
+                    console.error("Failed to process prompt. Error: " + submitPrompt.data);
                     showToast(
                         "Uh-oh!",
                         submitPrompt.data.message.substring("ERROR: ".length),
@@ -141,7 +141,7 @@ function Chat() {
         } catch (error) {
             setPrompt("");
             setIsSubmitting(false);
-            console.log("Failed to submit prompt. Error: " + error);
+            console.error("Failed to process prompt. Error: " + error);
             showToast(
                 "Uh-oh!",
                 "An unknown error occurred",
@@ -179,7 +179,6 @@ function Chat() {
 
     useEffect(() => {
         if (session !== null && !hasLoadedHistoryRef.current) {
-            console.log(session);
             session["history"].forEach((chat) => {
                 const chatObject = { client: chat.role, message: chat.content };
                 setChatHistory((prev) => [...prev, chatObject]);
@@ -191,7 +190,7 @@ function Chat() {
     return (
         <>
             <Box display="flex" width="100vw" height="100vh" overflow="hidden">
-                {!isNarrowerThan680 && (
+                {!isNarrowerThan870 && (
                     <Box
                         flex="1"
                         bg="gray.100"
@@ -353,18 +352,18 @@ function Chat() {
                     flex="2"
                     bg="gray.100"
                     display="flex"
-                    flexDir={isNarrowerThan680 ? "column" : "row"}
+                    flexDir={isNarrowerThan870 ? "column" : "row"}
                 >
-                    {isNarrowerThan680 && (
+                    {isNarrowerThan870 && (
                         <Box display="flex" justifyContent={"center"} mt={5} mb={4}>
                             <Image src="src/assets/NYP_AI_Text.png" width="20%" />
                         </Box>
                     )}
                     <Box
                         width="95%"
-                        height={isNarrowerThan680 ? "90%" : "95%"}
+                        height={isNarrowerThan870 ? "90%" : "95%"}
                         borderRadius="md"
-                        mt={isNarrowerThan680 ? 3 : 4}
+                        mt={isNarrowerThan870 ? 3 : 4}
                         marginLeft="auto"
                         marginRight="auto"
                     >
@@ -421,7 +420,7 @@ function Chat() {
                             </Box>
 
                             <Box display="flex" alignItems="center" p={2}>
-                                {isNarrowerThan680 && (
+                                {isNarrowerThan870 && (
                                     <Button
                                         onClick={onModalOpen}
                                         borderRadius="xl"
@@ -459,7 +458,7 @@ function Chat() {
                         </Card>
                     </Box>
 
-                    {isNarrowerThan680 && session && (
+                    {isNarrowerThan870 && session && (
                         <Text mb={3} mt={3} color="gray.600" textAlign={"center"} isTruncated>User: {session["email"]}</Text>
                     )}
                 </Box>

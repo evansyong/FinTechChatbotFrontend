@@ -80,7 +80,7 @@ function Home() {
         } catch (error) {
             onClose();
             setIsSubmittingEmail(false);
-            console.log("Failed to submit email. Error: " + error);
+            console.error("Failed to submit email. Error: " + error);
             showToast(
                 "Uh-oh!",
                 "An unknown error occured",

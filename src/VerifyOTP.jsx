@@ -61,7 +61,7 @@ const VerifyOtpCard = () => {
             }
         } catch (error) {
             setIsSubmittingOTP(false);
-            console.log("Failed to verify OTP. Error: " + error);
+            console.error("Failed to verify OTP. Error: " + error);
             showToast(
                 "Uh-oh!",
                 "An unknown error occurred",
