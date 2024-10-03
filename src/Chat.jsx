@@ -85,6 +85,10 @@ function Chat() {
     }
 
     const handleSubmitPrompt = async () => {
+        if (isSubmitting === true || prompt.trim() === "") {
+            return;
+        }
+
         try {
             setPrompt("");
             setIsSubmitting(true);
