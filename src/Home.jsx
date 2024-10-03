@@ -4,6 +4,7 @@ import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeade
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"
+import EncryptButton from "./components/EncryptButton";
 import instance from "../src/networking"
 
 function Home() {
@@ -100,52 +101,45 @@ function Home() {
 
     return (
         <>
-            <Box
-                display="flex"
-                justifyContent="center"
-                flexDirection="column"
-                minHeight="90vh"
-                alignItems="center"
-                mt={10}
-            >
-                <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
-
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
-                        <Text mt={10} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"} mb={6} textAlign={"center"} fontWeight={"bold"}>
-                            Welcome to NYPChat
-                        </Text>
-
-                        <Text mb={4} color="gray.500" textAlign={"left"}>
-                            NYPChat is a fun and intuitive chatbot which you can ask anything NYP to. It was designed to demonstrate the power of Retrieval Augmented Generation. Members of the NYP AI Student Interest Group conducted Project LLM, a research project into learning the nuances of Large Language Models and coercing them to get desired output, in 2024. NYPChat is a result of this project.
-                        </Text>
-
-                        <Text mb={4} color="gray.500" textAlign={"left"}>
-                            You can easily flick a few switches and dials and NYPChat will on-the-spot create retrieval chains that meet your requirements and generate an answer to your prompt. Behind the scenes, entire programmatic chains and blocks, supported by prompt templates and vectorstores, are assembled in real-time to generate answers that keep in context with the conversation.
-                        </Text>
-
-                        <Text mb={4} color="gray.500" textAlign={"left"}>
-                            What are you waiting for? Try it out now! 
-                        </Text>
-                    </Box>
-                </motion.div>
-
-                <Box display="flex" justifyContent={"center"} mt={5} mb={10}>
-                    <Button
-                        bg="#3171FA"
-                        color="white"
-                        _hover={{ bg: "#275CCD" }}
-                        _active={{ bg: "#275CCD" }}
-                        borderRadius={"xl"}
-                        size="lg"
-                        onClick={handleGetStarted}
+            <Box display="flex" width="100vw" height="100vh" overflow="hidden">
+                <Box flex="1" bg="white" display="flex" alignItems="center" justifyContent="center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
                     >
-                        Get Started
-                    </Button>
+                        <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
+                    </motion.div>
+                </Box>
+        
+                <Box flex="2" bg="gray.100" display="flex" flexDirection="column" justifyContent="center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
+                            <Text mt={10} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"} mb={10} textAlign={"center"} fontWeight={"bold"}>
+                                Welcome to NYPChat
+                            </Text>
+
+                            <Text mb={4} color="gray.500" textAlign={"left"}>
+                                NYPChat is a fun and intuitive chatbot which you can ask anything NYP to. It was designed to demonstrate the power of Retrieval Augmented Generation. Members of the NYP AI Student Interest Group conducted Project LLM, a research project into learning the nuances of Large Language Models and coercing them to get desired output, in 2024. NYPChat is a result of this project.
+                            </Text>
+
+                            <Text mb={4} color="gray.500" textAlign={"left"}>
+                                You can easily flick a few switches and dials and NYPChat will on-the-spot create retrieval chains that meet your requirements and generate an answer to your prompt. Behind the scenes, entire programmatic chains and blocks, supported by prompt templates and vectorstores, are assembled in real-time to generate answers that keep in context with the conversation.
+                            </Text>
+
+                            <Text mb={4} color="gray.500" textAlign={"center"}>
+                                What are you waiting for? Try it out now! 
+                            </Text>
+                        </Box>
+                    </motion.div>
+
+                    <Box display="flex" justifyContent={"center"} mt={10} mb={10} className="grid min-h-[200px] place-content-center bg-neutral-900 p-4">
+                        <EncryptButton onClick={handleGetStarted} />
+                    </Box>
                 </Box>
             </Box>
 
@@ -194,6 +188,7 @@ function Home() {
             </Modal>
         </>
     )
+    
 }
 
 export default Home;
