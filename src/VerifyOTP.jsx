@@ -10,6 +10,8 @@ import instance from './networking';
 const VerifyOtpCard = () => {
     const [otp, setOtp] = useState("");
     const [isSubmittingOTP, setIsSubmittingOTP] = useState(false);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
+    const [countdown, setCountdown] = useState(30);
     const location = useLocation();
     const navigate = useNavigate();
     const toast = useToast();
@@ -80,12 +82,81 @@ const VerifyOtpCard = () => {
         }
     }
 
+    const handleResendOTP = async () => {
+        try {
+            localStorage.setItem("OTPRequested", "true");
+            const resendOTP = await instance.post("/requestOTP", {
+                email: email
+            });
+
+            if (resendOTP.data.startsWith("SUCCESS")) {
+                showToast("Success", "A new OTP has been sent to your email.", "success", 3500, true);
+                const currentTime = Date.now();
+                localStorage.setItem("resendOTPTime", currentTime);
+                setIsResendDisabled(true);
+                setCountdown(30);
+                return;
+            } else if (resendOTP.data.startsWith("UERROR")) {
+                showToast(
+                    "Uh-oh!",
+                    resendOTP.data.substring("UERROR: ".length),
+                    "info",
+                    3500,
+                    true
+                );
+            } else if (resendOTP.data.startsWith("ERROR")) {
+                showToast(
+                    "Uh-oh!",
+                    resendOTP.data.substring("ERROR: ".length),
+                    "error",
+                    3500,
+                    true
+                );
+            }
+        } catch (error) {
+            console.error("Failed to resend OTP. Error: " + error);
+            showToast("Uh-oh!", "An unknown error occurred", "error", 3500, true);
+        }
+    };
+
     useEffect(() => {
         if (!localStorage.getItem("OTPRequested") || localStorage.getItem("OTPRequested") !== "true") {
             console.log("Access denied. Redirecting to home page.");
             navigate("/");
         }
     }, []);
+
+    useEffect(() => {
+        const storedTime = localStorage.getItem("resendOTPTime");
+        if (storedTime) {
+            const timePassed = Math.floor((Date.now() - parseInt(storedTime)) / 1000);
+            const remainingTime = 30 - timePassed;
+            if (remainingTime > 0) {
+                setCountdown(remainingTime);
+                setIsResendDisabled(true);
+            } else {
+                setCountdown(0);
+                setIsResendDisabled(false);
+            }
+        } else {
+            setIsResendDisabled(true);
+        }
+
+        let timer;
+        if (isResendDisabled && countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev === 1) {
+                        clearInterval(timer);
+                        setIsResendDisabled(false);
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(timer);
+    }, [countdown, isResendDisabled]);
 
     return (
         <motion.div
@@ -122,9 +193,18 @@ const VerifyOtpCard = () => {
                             Please enter the OTP sent to your email
                         </Text>
 
+                        <Text 
+                            textAlign={"center"} 
+                            color={isResendDisabled ? "gray" : "blue"} 
+                            sx={{ cursor: isResendDisabled ? "default" : "pointer" }}
+                            onClick={!isResendDisabled ? handleResendOTP : null}
+                        >
+                            {isResendDisabled ? `Resend OTP in ${countdown}s` : "Resend OTP"}
+                        </Text>
+
                         <Input placeholder="Enter OTP" onChange={event => handleOTPInputChange(event.target.value)} onKeyDown={handleKeyDown} />
 
-                        {isSubmittingOTP === true ? (
+                        {isSubmittingOTP ? (
                             <Button
                                 isLoading
                                 width={"100%"}
