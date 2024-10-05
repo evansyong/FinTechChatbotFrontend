@@ -240,99 +240,109 @@ function Chat() {
                                         )}
                                     </Box>
 
-                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
-                                            <Text margin={3}>Answer mode</Text>
-                                            <Menu>
-                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                    {answerMode === "pipeline" ? "Pipeline" : "Direct"}
-                                                </MenuButton>
-                                                <MenuList>
-                                                    <MenuItem onClick={() => setAnswerMode('pipeline')}>Pipeline</MenuItem>
-                                                    <MenuItem onClick={() => setAnswerMode('direct')}>Direct</MenuItem>
-                                                </MenuList>
-                                            </Menu>
-                                        </Box>
-                                    </Card>
+                                    <Tooltip placement='right-end' hasArrow label="Pipeline triggers the assembly of a RAG chain in real-time and invoke it with your input. Direct mode uses manual retrieval and inject directly into an LLM call." aria-label='Chakra Tooltip'>
+                                        <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                            <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
+                                                <Text margin={3}>Answer mode</Text>
+                                                <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                        {answerMode === "pipeline" ? "Pipeline" : "Direct"}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        <MenuItem onClick={() => setAnswerMode('pipeline')}>Pipeline</MenuItem>
+                                                        <MenuItem onClick={() => setAnswerMode('direct')}>Direct</MenuItem>
+                                                    </MenuList>
+                                                </Menu>
+                                            </Box>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
-                                            <Text margin={3}>Search type</Text>
-                                            <Menu>
-                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                    {searchType === "similarity" ? "Similarity" : "MMR"}
-                                                </MenuButton>
-                                                <MenuList>
-                                                    <MenuItem onClick={() => setSearchType('similarity')}>Similarity</MenuItem>
-                                                    <MenuItem onClick={() => setSearchType('mmr')}>MMR</MenuItem>
-                                                </MenuList>
-                                            </Menu>
-                                        </Box>
-                                    </Card>
+                                    <Tooltip placement='right-end' hasArrow label="Similarity produces answers that are most relevant, but possibly redundant. Maximum marginal relevance produces answers with high similarity but a little bit of diversity too." aria-label='Chakra Tooltip'>
+                                        <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                            <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
+                                                <Text margin={3}>Search type</Text>
+                                                <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                        {searchType === "similarity" ? "Similarity" : "MMR"}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        <MenuItem onClick={() => setSearchType('similarity')}>Similarity</MenuItem>
+                                                        <MenuItem onClick={() => setSearchType('mmr')}>MMR</MenuItem>
+                                                    </MenuList>
+                                                </Menu>
+                                            </Box>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                            <Text margin={3}>Chunks (k)</Text>
-                                            <Menu>
-                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                    {chunks}
-                                                </MenuButton>
-                                                <MenuList>
-                                                    {[...Array(10)].map((_, index) => {
-                                                        const value = index + 1;
-                                                        return (
-                                                            <MenuItem key={value} onClick={() => setChunks(value)}>
-                                                                {value}
+                                    <Tooltip placement='right-end' hasArrow label="Chunks of data to be chosen to provide context out of the fetched ones." aria-label='Chakra Tooltip'>
+                                        <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                            <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                                <Text margin={3}>Chunks (k)</Text>
+                                                <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                        {chunks}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        {[...Array(10)].map((_, index) => {
+                                                            const value = index + 1;
+                                                            return (
+                                                                <MenuItem key={value} onClick={() => setChunks(value)}>
+                                                                    {value}
+                                                                </MenuItem>
+                                                            );
+                                                        })}
+                                                    </MenuList>
+                                                </Menu>
+                                            </Box>
+                                        </Card>
+                                    </Tooltip>
+
+                                    <Tooltip placement='right-end' hasArrow label="Chunks of data to be drawn out from the database. Must be higher than chunks (k)." aria-label='Chakra Tooltip'>
+                                        <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                            <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                                <Text margin={3}>Fetched chunks</Text>
+                                                <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                        {fetchedChunks}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        {[...Array(10)].map((_, index) => {
+                                                            const value = index + 1;
+                                                            return (
+                                                                <MenuItem
+                                                                    key={value}
+                                                                    onClick={() => setFetchedChunks(value)}
+                                                                    isDisabled={value <= chunks}
+                                                                >
+                                                                    {value}
+                                                                </MenuItem>
+                                                            );
+                                                        })}
+                                                    </MenuList>
+                                                </Menu>
+                                            </Box>
+                                        </Card>
+                                    </Tooltip>
+
+                                    <Tooltip placement='right-end' hasArrow label="Tune the creativity of the LLM. 1.0 is most creative, 0.0 is the least." aria-label='Chakra Tooltip'>
+                                        <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto">
+                                            <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                                <Text margin={3}>Temperature</Text>
+                                                <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                        {temperature}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        {[0.0, 0.3, 0.5, 0.8, 1.0].map((temp) => (
+                                                            <MenuItem key={temp} onClick={() => setTemperature(parseFloat(temp))}>
+                                                                {temp}
                                                             </MenuItem>
-                                                        );
-                                                    })}
-                                                </MenuList>
-                                            </Menu>
-                                        </Box>
-                                    </Card>
-
-                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                            <Text margin={3}>Fetched chunks</Text>
-                                            <Menu>
-                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                    {fetchedChunks}
-                                                </MenuButton>
-                                                <MenuList>
-                                                    {[...Array(10)].map((_, index) => {
-                                                        const value = index + 1;
-                                                        return (
-                                                            <MenuItem
-                                                                key={value}
-                                                                onClick={() => setFetchedChunks(value)}
-                                                                isDisabled={value <= chunks}
-                                                            >
-                                                                {value}
-                                                            </MenuItem>
-                                                        );
-                                                    })}
-                                                </MenuList>
-                                            </Menu>
-                                        </Box>
-                                    </Card>
-
-                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto">
-                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                            <Text margin={3}>Temperature</Text>
-                                            <Menu>
-                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                    {temperature}
-                                                </MenuButton>
-                                                <MenuList>
-                                                    {[0.0, 0.3, 0.5, 0.8, 1.0].map((temp) => (
-                                                        <MenuItem key={temp} onClick={() => setTemperature(parseFloat(temp))}>
-                                                            {temp}
-                                                        </MenuItem>
-                                                    ))}
-                                                </MenuList>
-                                            </Menu>
-                                        </Box>
-                                    </Card>
+                                                        ))}
+                                                    </MenuList>
+                                                </Menu>
+                                            </Box>
+                                        </Card>
+                                    </Tooltip>
 
                                     <Box display="flex" justifyContent={"center"} mt={5}>
                                         <Box
@@ -545,99 +555,109 @@ function Chat() {
                     <ModalBody>
                         <Box display="flex" justifyContent={"center"}>
                             <Box display='flex' flexDir={"column"} width="100%">
-                                <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                    <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
-                                        <Text margin={3}>Answer mode</Text>
-                                        <Menu>
-                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                {answerMode === "pipeline" ? "Pipeline" : "Direct"}
-                                            </MenuButton>
-                                            <MenuList>
-                                                <MenuItem onClick={() => setAnswerMode('pipeline')}>Pipeline</MenuItem>
-                                                <MenuItem onClick={() => setAnswerMode('direct')}>Direct</MenuItem>
-                                            </MenuList>
-                                        </Menu>
-                                    </Box>
-                                </Card>
+                                <Tooltip placement='right-end' hasArrow label="Pipeline triggers the assembly of a RAG chain in real-time and invoke it with your input. Direct mode uses manual retrieval and inject directly into an LLM call." aria-label='Chakra Tooltip'>
+                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
+                                            <Text margin={3}>Answer mode</Text>
+                                            <Menu>
+                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                    {answerMode === "pipeline" ? "Pipeline" : "Direct"}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    <MenuItem onClick={() => setAnswerMode('pipeline')}>Pipeline</MenuItem>
+                                                    <MenuItem onClick={() => setAnswerMode('direct')}>Direct</MenuItem>
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Card>
+                                </Tooltip>
 
-                                <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                    <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
-                                        <Text margin={3}>Search type</Text>
-                                        <Menu>
-                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                {searchType === "similarity" ? "Similarity" : "MMR"}
-                                            </MenuButton>
-                                            <MenuList>
-                                                <MenuItem onClick={() => setSearchType('similarity')}>Similarity</MenuItem>
-                                                <MenuItem onClick={() => setSearchType('mmr')}>MMR</MenuItem>
-                                            </MenuList>
-                                        </Menu>
-                                    </Box>
-                                </Card>
+                                <Tooltip placement='right-end' hasArrow label="Similarity produces answers that are most relevant, but possibly redundant. Maximum marginal relevance produces answers with high similarity but a little bit of diversity too." aria-label='Chakra Tooltip'>
+                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="center" height="100%">
+                                            <Text margin={3}>Search type</Text>
+                                            <Menu>
+                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                    {searchType === "similarity" ? "Similarity" : "MMR"}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    <MenuItem onClick={() => setSearchType('similarity')}>Similarity</MenuItem>
+                                                    <MenuItem onClick={() => setSearchType('mmr')}>MMR</MenuItem>
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Card>
+                                </Tooltip>
 
-                                <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                    <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                        <Text margin={3}>Chunks (k)</Text>
-                                        <Menu>
-                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                {chunks}
-                                            </MenuButton>
-                                            <MenuList>
-                                                {[...Array(10)].map((_, index) => {
-                                                    const value = index + 1;
-                                                    return (
-                                                        <MenuItem key={value} onClick={() => setChunks(value)}>
-                                                            {value}
+                                <Tooltip placement='right-end' hasArrow label="Chunks of data to be chosen to provide context out of the fetched ones." aria-label='Chakra Tooltip'>
+                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                            <Text margin={3}>Chunks (k)</Text>
+                                            <Menu>
+                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                    {chunks}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    {[...Array(10)].map((_, index) => {
+                                                        const value = index + 1;
+                                                        return (
+                                                            <MenuItem key={value} onClick={() => setChunks(value)}>
+                                                                {value}
+                                                            </MenuItem>
+                                                        );
+                                                    })}
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Card>
+                                </Tooltip>
+
+                                <Tooltip placement='right-end' hasArrow label="Chunks of data to be drawn out from the database. Must be higher than chunks (k)." aria-label='Chakra Tooltip'>
+                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
+                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                            <Text margin={3}>Fetched chunks</Text>
+                                            <Menu>
+                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                    {fetchedChunks}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    {[...Array(10)].map((_, index) => {
+                                                        const value = index + 1;
+                                                        return (
+                                                            <MenuItem
+                                                                key={value}
+                                                                onClick={() => setFetchedChunks(value)}
+                                                                isDisabled={value <= chunks}
+                                                            >
+                                                                {value}
+                                                            </MenuItem>
+                                                        );
+                                                    })}
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Card>
+                                </Tooltip>
+
+                                <Tooltip placement='right-end' hasArrow label="Tune the creativity of the LLM. 1.0 is most creative, 0.0 is the least." aria-label='Chakra Tooltip'>
+                                    <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto">
+                                        <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
+                                            <Text margin={3}>Temperature</Text>
+                                            <Menu>
+                                                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
+                                                    {temperature}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    {[0.0, 0.3, 0.5, 0.8, 1.0].map((temp) => (
+                                                        <MenuItem key={temp} onClick={() => setTemperature(parseFloat(temp))}>
+                                                            {temp}
                                                         </MenuItem>
-                                                    );
-                                                })}
-                                            </MenuList>
-                                        </Menu>
-                                    </Box>
-                                </Card>
-
-                                <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto" mb={5}>
-                                    <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                        <Text margin={3}>Fetched chunks</Text>
-                                        <Menu>
-                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                {fetchedChunks}
-                                            </MenuButton>
-                                            <MenuList>
-                                                {[...Array(10)].map((_, index) => {
-                                                    const value = index + 1;
-                                                    return (
-                                                        <MenuItem
-                                                            key={value}
-                                                            onClick={() => setFetchedChunks(value)}
-                                                            isDisabled={value <= chunks}
-                                                        >
-                                                            {value}
-                                                        </MenuItem>
-                                                    );
-                                                })}
-                                            </MenuList>
-                                        </Menu>
-                                    </Box>
-                                </Card>
-
-                                <Card width="90%" borderRadius={"xl"} marginLeft="auto" marginRight="auto">
-                                    <Box display="flex" justifyContent={"space-between"} alignItems="center" height="100%">
-                                        <Text margin={3}>Temperature</Text>
-                                        <Menu>
-                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} margin={3}>
-                                                {temperature}
-                                            </MenuButton>
-                                            <MenuList>
-                                                {[0.0, 0.3, 0.5, 0.8, 1.0].map((temp) => (
-                                                    <MenuItem key={temp} onClick={() => setTemperature(parseFloat(temp))}>
-                                                        {temp}
-                                                    </MenuItem>
-                                                ))}
-                                            </MenuList>
-                                        </Menu>
-                                    </Box>
-                                </Card>
+                                                    ))}
+                                                </MenuList>
+                                            </Menu>
+                                        </Box>
+                                    </Card>
+                                </Tooltip>
 
                                 <Box display="flex" justifyContent={"center"} mt={5} mb={2}>
                                     <Box
