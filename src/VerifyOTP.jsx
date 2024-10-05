@@ -139,7 +139,7 @@ const VerifyOtpCard = () => {
                 setIsResendDisabled(false);
             }
         } else {
-            setIsResendDisabled(true);
+            setIsResendDisabled(false);
         }
 
         let timer;
