@@ -1,7 +1,11 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, IconButton } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { ArrowBackIcon, InfoIcon } from '@chakra-ui/icons';
 
 function Credits() {
+    const navigate = useNavigate();
+
     return (
         <Box
             bg="gray.100"
@@ -12,6 +16,7 @@ function Credits() {
             justifyContent="center"
             alignItems="center"
             overflow="hidden"
+            position="relative"
             sx={{
                 "&::-webkit-scrollbar": {
                     width: "10px"
@@ -29,6 +34,20 @@ function Credits() {
                 }
             }}
         >
+            <IconButton
+                icon={<ArrowBackIcon />}
+                aria-label="Go back"
+                onClick={() => navigate("/")}
+                position="absolute"
+                top={4}
+                left={4}
+                borderRadius="full"
+                bg="#3171FA"
+                color="white"
+                _hover={{ bg: "#2C65E1" }}
+                _active={{ bg: "#2C65E1" }}
+            />
+
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -71,7 +90,13 @@ function Credits() {
                     </Flex>
                 </Box>
 
-                <Text fontFamily="'Comfortaa', sans-serif" textAlign={"center"} color="gray.600">Made with ❤️ by NYP AI</Text>
+                <Text fontFamily="'Comfortaa', sans-serif" textAlign={"center"} color="gray.600" mb={10}>Made with ❤️ by NYP AI</Text>
+
+                <Box display='flex' justifyContent={"center"}>
+                    <Text textAlign={"center"} color="gray.500" fontSize="sm" mt={10}>
+                        © 2021 NYP AI. All rights reserved.
+                    </Text>
+                </Box>
             </motion.div>
         </Box>
     );
