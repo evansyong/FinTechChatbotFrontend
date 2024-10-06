@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast } from "@chakra-ui/react"
+import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast, useMediaQuery } from "@chakra-ui/react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"
@@ -14,6 +14,8 @@ function Home() {
     const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
     const toast = useToast();
     const navigate = useNavigate();
+
+    const [isNarrowerThan890] = useMediaQuery("(max-width: 890px)");
 
     function showToast(title, description, status, duration, isClosable) {
         toast.closeAll();
@@ -103,15 +105,17 @@ function Home() {
     return (
         <>
             <Box display="flex" width="100vw" height="100vh" overflow="hidden">
-                <Box flex="1" bg="white" display="flex" alignItems="center" justifyContent="center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
-                    </motion.div>
-                </Box>
+                {!isNarrowerThan890 && (
+                    <Box flex="1" bg="white" display="flex" alignItems="center" justifyContent="center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <Image src="src/assets/NYP_AI_Text.png" width="280px" height="120px" alt="Logo" />
+                        </motion.div>
+                    </Box>
+                )}
         
                 <Box flex="2" bg="gray.100" display="flex" flexDirection="column" justifyContent="center">
                     <motion.div
@@ -120,6 +124,10 @@ function Home() {
                         transition={{ duration: 0.5 }}
                     >
                         <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
+                            <Box display='flex' justifyContent={"center"}>
+                                <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
+                            </Box>
+
                             <Text mt={10} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"} mb={10} textAlign={"center"} fontWeight={"bold"}>
                                 Welcome to NYPChat
                             </Text>
