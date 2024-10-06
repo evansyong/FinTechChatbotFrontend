@@ -179,7 +179,7 @@ function Home() {
                     </Box>
 
                     <Box display="flex" justifyContent={"center"} mb={5}>
-                        <Text color="gray.500" textAlign={"center"} cursor={"pointer"} _hover={{ color: "#3171FA" }} onClick={() => navigate("/credits")}>
+                        <Text color="#3171FA" textAlign={"center"} cursor={"pointer"} _hover={{ color: "#1F4FAF" }} onClick={() => navigate("/credits")}>
                             Credits
                         </Text>
                     </Box>
