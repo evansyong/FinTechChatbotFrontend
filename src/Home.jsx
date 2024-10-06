@@ -124,9 +124,11 @@ function Home() {
                         transition={{ duration: 0.5 }}
                     >
                         <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
-                            <Box display='flex' justifyContent={"center"}>
-                                <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
-                            </Box>
+                            {isNarrowerThan890 && (
+                                <Box display='flex' justifyContent={"center"}>
+                                    <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
+                                </Box>
+                            )}
 
                             <Text mt={10} fontSize="2xl" color="gray.600" fontFamily="'Comfortaa', sans-serif" mb={10} textAlign={"center"} fontWeight={"bold"}>
                                 Welcome to NYPChat
