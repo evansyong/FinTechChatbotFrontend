@@ -10,6 +10,7 @@ import instance from './networking';
 const VerifyOtpCard = () => {
     const [otp, setOtp] = useState("");
     const [isSubmittingOTP, setIsSubmittingOTP] = useState(false);
+    const [isRequestingNewOTP, setIsRequestingNewOTP] = useState(false);
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [countdown, setCountdown] = useState(30);
     const location = useLocation();
@@ -84,12 +85,19 @@ const VerifyOtpCard = () => {
 
     const handleResendOTP = async () => {
         try {
+            if (isRequestingNewOTP === true) {
+                showToast("Hold on!", "Please wait while we generate a new OTP for you.", "info", 3500, true);
+                return;
+            }
+
+            setIsRequestingNewOTP(true);
             localStorage.setItem("OTPRequested", "true");
             const resendOTP = await instance.post("/requestOTP", {
                 email: email
             });
 
             if (resendOTP.data.startsWith("SUCCESS")) {
+                setIsRequestingNewOTP(false);
                 showToast("Success", "A new OTP has been sent to your email.", "success", 3500, true);
                 const currentTime = Date.now();
                 localStorage.setItem("resendOTPTime", currentTime);
@@ -97,6 +105,7 @@ const VerifyOtpCard = () => {
                 setCountdown(30);
                 return;
             } else if (resendOTP.data.startsWith("UERROR")) {
+                setIsRequestingNewOTP(false);
                 showToast(
                     "Uh-oh!",
                     resendOTP.data.substring("UERROR: ".length),
@@ -105,6 +114,7 @@ const VerifyOtpCard = () => {
                     true
                 );
             } else if (resendOTP.data.startsWith("ERROR")) {
+                setIsRequestingNewOTP(false);
                 showToast(
                     "Uh-oh!",
                     resendOTP.data.substring("ERROR: ".length),
@@ -115,6 +125,7 @@ const VerifyOtpCard = () => {
             }
         } catch (error) {
             console.error("Failed to resend OTP. Error: " + error);
+            setIsRequestingNewOTP(false);
             showToast("Uh-oh!", "An unknown error occurred", "error", 3500, true);
         }
     };
@@ -198,14 +209,23 @@ const VerifyOtpCard = () => {
                             Please enter the OTP sent to your email
                         </Text>
 
-                        <Text 
-                            textAlign={"center"} 
-                            color={isResendDisabled ? "gray" : "blue"} 
-                            sx={{ cursor: isResendDisabled ? "default" : "pointer" }}
-                            onClick={!isResendDisabled ? handleResendOTP : null}
-                        >
-                            {isResendDisabled ? `Resend OTP in ${countdown}s` : "Resend OTP"}
-                        </Text>
+                        {isRequestingNewOTP ? (
+                            <Text 
+                                textAlign={"center"} 
+                                color="gray"
+                            >
+                                Requesting...
+                            </Text>
+                        ) : (
+                            <Text 
+                                textAlign={"center"} 
+                                color={isResendDisabled ? "gray" : "blue"} 
+                                sx={{ cursor: isResendDisabled ? "default" : "pointer" }}
+                                onClick={!isResendDisabled ? handleResendOTP : null}
+                            >
+                                {isResendDisabled ? `Resend OTP in ${countdown}s` : "Resend OTP"}
+                            </Text>
+                        )}
 
                         <Input placeholder="Enter OTP" onChange={event => handleOTPInputChange(event.target.value)} onKeyDown={handleKeyDown} />
 

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 
 import { Image, Box, Text, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure, FormControl, FormHelperText, FormLabel, Input, ModalFooter, useToast, useMediaQuery } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"
 import EncryptButton from "./components/EncryptButton";
@@ -101,6 +101,10 @@ function Home() {
             handleEmailSubmit();
         }
     }
+
+    useEffect(() => {
+        localStorage.removeItem("resendOTPTime");
+    }, []);
 
     return (
         <>
