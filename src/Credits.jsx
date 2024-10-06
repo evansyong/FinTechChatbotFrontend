@@ -1,7 +1,7 @@
 import { Box, Flex, Text, IconButton } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowBackIcon, InfoIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 
 function Credits() {
     const navigate = useNavigate();
@@ -94,7 +94,7 @@ function Credits() {
 
                 <Box display='flex' justifyContent={"center"}>
                     <Text textAlign={"center"} color="gray.500" fontSize="sm" mt={10}>
-                        © 2021 NYP AI. All rights reserved.
+                        © 2024 NYP AI. All rights reserved.
                     </Text>
                 </Box>
             </motion.div>

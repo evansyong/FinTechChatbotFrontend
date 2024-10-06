@@ -174,13 +174,19 @@ function Home() {
                         </Box>
                     </motion.div>
 
-                    <Box display="flex" justifyContent={"center"} mt={5} mb={5} className="grid min-h-[200px] place-content-center bg-neutral-900 p-4">
+                    <Box display="flex" justifyContent={"center"} mt={5} mb={10} className="grid min-h-[200px] place-content-center bg-neutral-900 p-4">
                         <EncryptButton onClick={handleGetStarted} />
                     </Box>
 
                     <Box display="flex" justifyContent={"center"} mb={5}>
                         <Text color="gray.500" textAlign={"center"} cursor={"pointer"} _hover={{ color: "#3171FA" }} onClick={() => navigate("/credits")}>
                             Credits
+                        </Text>
+                    </Box>
+
+                    <Box display='flex' justifyContent={"center"} mb={5}>
+                        <Text textAlign={"center"} color="gray.500" fontSize="sm" mt={15}>
+                            © 2024 NYP AI. All rights reserved.
                         </Text>
                     </Box>
                 </Box>
