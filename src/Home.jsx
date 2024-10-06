@@ -104,7 +104,33 @@ function Home() {
 
     return (
         <>
-            <Box display="flex" width="100vw" height="100vh" overflow="hidden">
+            <Box
+                bg={isNarrowerThan890 ? "gray.100" : "white"}
+                paddingTop={isNarrowerThan890 ? 10 : 0}
+                display="flex"
+                flexDirection="row"
+                minHeight="100vh"
+                width="100vw"
+                overflowY="scroll"
+                overflow="hidden"
+                sx={{
+                    "&::-webkit-scrollbar": {
+                        width: "10px"
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "gray.300",
+                        borderRadius: "20px"
+
+                    },
+                    "&::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: "gray.400"
+                    },
+                    "&::-webkit-scrollbar-track": {
+                        backgroundColor: "gray.100",
+                        borderRadius: "20px"
+                    }
+                }}
+            >
                 {!isNarrowerThan890 && (
                     <Box flex="1" bg="white" display="flex" alignItems="center" justifyContent="center">
                         <motion.div
@@ -123,13 +149,13 @@ function Home() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
-                            {isNarrowerThan890 && (
-                                <Box display='flex' justifyContent={"center"}>
-                                    <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
-                                </Box>
-                            )}
+                        {isNarrowerThan890 && (
+                            <Box display='flex' justifyContent={"center"}>
+                                <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
+                            </Box>  
+                        )}
 
+                        <Box display="flex" flexDir={"column"} justifyContent={"center"} paddingLeft={10} paddingRight={10}>
                             <Text mt={10} fontSize="2xl" color="gray.600" fontFamily="'Comfortaa', sans-serif" mb={10} textAlign={"center"} fontWeight={"bold"}>
                                 Welcome to NYPChat
                             </Text>
@@ -148,8 +174,14 @@ function Home() {
                         </Box>
                     </motion.div>
 
-                    <Box display="flex" justifyContent={"center"} mt={10} mb={10} className="grid min-h-[200px] place-content-center bg-neutral-900 p-4">
+                    <Box display="flex" justifyContent={"center"} mt={5} mb={5} className="grid min-h-[200px] place-content-center bg-neutral-900 p-4">
                         <EncryptButton onClick={handleGetStarted} />
+                    </Box>
+
+                    <Box display="flex" justifyContent={"center"} mb={5}>
+                        <Text color="gray.500" textAlign={"center"} cursor={"pointer"} _hover={{ color: "#3171FA" }} onClick={() => navigate("/credits")}>
+                            Credits
+                        </Text>
                     </Box>
                 </Box>
             </Box>
