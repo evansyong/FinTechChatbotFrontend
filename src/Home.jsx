@@ -128,7 +128,7 @@ function Home() {
                                 <Image src="src/assets/NYP_AI_Text.png" width="201px" height="86px" alt="Logo" />
                             </Box>
 
-                            <Text mt={10} fontSize="2xl" color="gray.600" fontFamily={"Comfortaa"} mb={10} textAlign={"center"} fontWeight={"bold"}>
+                            <Text mt={10} fontSize="2xl" color="gray.600" fontFamily="'Comfortaa', sans-serif" mb={10} textAlign={"center"} fontWeight={"bold"}>
                                 Welcome to NYPChat
                             </Text>
 
