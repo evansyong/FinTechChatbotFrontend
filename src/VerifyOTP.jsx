@@ -123,6 +123,11 @@ const VerifyOtpCard = () => {
         if (!localStorage.getItem("OTPRequested") || localStorage.getItem("OTPRequested") !== "true") {
             console.log("Access denied. Redirecting to home page.");
             navigate("/");
+        } else {
+            const currentTime = Date.now();
+            if (!localStorage.getItem("resendOTPTime")) {
+                localStorage.setItem("resendOTPTime", currentTime);
+            }
         }
     }, []);
 
