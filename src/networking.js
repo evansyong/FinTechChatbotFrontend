@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: "https://chat.nyp.ai",
+    baseURL: location.origin,
 })
 
 instance.interceptors.request.use((config) => {
